@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Colt Messenger Kotlin</string>
+    <string name="password">Пароль</string>
+    <string name="your_email">Ваш email</string>
+    <string name="surname">Фамилия</string>
+    <string name="name">Имя</string>
+    <string name="age">Возраст</string>
+    <string name="registration">Регистрация</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="enter_email">Введите email</string>
+    <string name="enter">Вход</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="wrong_email_registration">Почта не может быть пустой</string>
+    <string name="wrong_password_registration">Пароль не может быть пустым</string>
+    <string name="wrong_password_length_registration">Длина пароля не может быть короче %d символов</string>
+    <string name="wrong_name_registration">Имя не может быть пустым</string>
+    <string name="wrong_surname_registration">Фамилия не может быть пустой</string>
+    <string name="wrong_age_registration">Возраст не может быть пустым</string>
+    <string name="password_recovery">Восстановление пароля</string>
+    <string name="send_to_email">Отправить на почту</string>
+    <string name="success_registration">Регистрация прошла успешно</string>
+    <string name="login_or_password_is_empty">Не заполнен логин или пароль</string>
+    <string name="logout">Выйти</string>
+    <string name="success_send_email">Ссылка на восстановление отправлена на указанную почту</string>
+    <string name="error_send_email">Некорректный формат почты</string>
+    <string name="user_created">Пользователь создан</string>
+</resources>

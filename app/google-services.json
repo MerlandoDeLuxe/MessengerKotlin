@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "755746115520",
+    "project_id": "messengerkotlin-f6258",
+    "storage_bucket": "messengerkotlin-f6258.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755746115520:android:eaf24246cbcba3a956c225",
+        "android_client_info": {
+          "package_name": "com.example.messengerkotlin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoa5StJHjbsjXAtfYrlbCWt2iujiadqLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
