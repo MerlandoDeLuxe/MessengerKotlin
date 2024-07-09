@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun newIntent(context: Context, email: String): Intent {
+    fun newIntent(context: Context, email: String?): Intent {
         val intent = Intent(context, LoginActivity::class.java)
         intent.putExtra(EXTRA_EMAIL, email)
         return intent

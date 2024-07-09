@@ -13,9 +13,8 @@ import com.google.firebase.auth.auth
 class ListOfUsersViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG: String = "ListOfUsersViewModel"
     private val auth = Firebase.auth
-    var userEmail: MutableLiveData<String> = MutableLiveData<String>() //не используется
+    var userEmail: String? = auth.currentUser?.email
     var userLD: MutableLiveData<FirebaseUser> = MutableLiveData<FirebaseUser>()
-
 
     fun logout() {
 

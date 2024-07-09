@@ -37,8 +37,9 @@ class ListOfUsersActivity : AppCompatActivity() {
     private fun observeViewModel(){
         viewModel.userLD.observe(this) {
             if (it == null) {
+                Log.d(TAG, "observeViewModel: useremail = ${viewModel.userEmail}")
                 finish()
-                val intent = LoginActivity().newIntent(this, "")
+                val intent = LoginActivity().newIntent(this, viewModel.userEmail)
                 startActivity(intent)
             }
         }
