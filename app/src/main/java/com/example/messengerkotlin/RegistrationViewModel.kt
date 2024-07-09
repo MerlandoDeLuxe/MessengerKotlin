@@ -8,12 +8,16 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 
 class RegistrationViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG: String = "RegistrationViewModel"
     private val auth = Firebase.auth
     val userLD = MutableLiveData<FirebaseUser>()
     val wrongAuthTextLD = MutableLiveData<String>()
+    val database = Firebase.database
+    val referenceUser = database.getReference("Users")
 
     fun createUser(
         email: String,
@@ -21,14 +25,27 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
         name: String,
         surname: String,
         age: Int
-    ){
+    ) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                Log.d(TAG, "createUser: Успешная аутентификация пользователя ${it.user}")
-                //После успешного создания пользователя, если не выйти, то откроется не повторный ввод логина пароля,
-                // а сразу список контактов
-                userLD.value = it.user
-                auth.signOut()
+                Log.d(TAG, "createUser: Успешное создание пользователя ${it.user}")
+                val firebaseUser = auth.currentUser
+                if (firebaseUser != null) {
+
+                    val user = User(
+                        firebaseUser.uid,
+                        name,
+                        surname,
+                        age,
+                        false,
+                        firebaseUser.email.toString()
+                    )
+                    referenceUser.child(user.id).setValue(user)
+                    //После успешного создания пользователя, если не выйти, то откроется не повторный ввод логина пароля,
+                    // а сразу список контактов
+                    userLD.value = it.user
+                    auth.signOut()
+                }
             }
             .addOnFailureListener {
                 wrongAuthTextLD.value = it.message

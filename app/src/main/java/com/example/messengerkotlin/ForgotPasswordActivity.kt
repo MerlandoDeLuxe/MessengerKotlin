@@ -30,7 +30,7 @@ class ForgotPasswordActivity : AppCompatActivity() {
             insets
         }
         initializeAllElements()
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#0F5E93")))
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#800F5E93")))
         editTextTextEmailAddressForRecovery.setText(intent.getStringExtra(EXTRA_EMAIL))
         //==================================================================================
         setupOnClickListeners()

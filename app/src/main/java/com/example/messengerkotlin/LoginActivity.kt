@@ -35,7 +35,7 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
         initializeAllElements()
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#0F5E93")))
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#800F5E93")))
         editTextTextEmailAddress.setText(intent.getStringExtra(EXTRA_EMAIL))
         //========================================================================================
         setupOnClickListeners();
@@ -94,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun newIntent(context: Context, email: String): Intent {
+    fun newIntent(context: Context, email: String?): Intent {
         val intent = Intent(context, LoginActivity::class.java)
         intent.putExtra(EXTRA_EMAIL, email)
         return intent
