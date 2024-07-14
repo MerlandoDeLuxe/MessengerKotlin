@@ -32,7 +32,7 @@ class ListOfUsersViewModel(application: Application) : AndroidViewModel(applicat
                     for (snap in snapshot.children) {
                         val user = snap.getValue(User::class.java)
                         if (user != null) {
-                            if (currentUser.uid != user.id) {
+                            if (!currentUser.uid.equals(user.id)) {
                                 Log.d(TAG, "onDataChange: listOfUsersFromDb = $listOfUsersFromDb")
                                 listOfUsersFromDb.add(user)
                                 Log.d(TAG, "onDataChange: listOfUsersFromDb = $listOfUsersFromDb")

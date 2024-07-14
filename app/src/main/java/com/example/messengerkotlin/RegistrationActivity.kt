@@ -119,10 +119,10 @@ class RegistrationActivity : AppCompatActivity() {
                 ).show()
             } else {
                 viewModel.createUser(
-                    editTextRegistrationEmail.text.toString(),
-                    editTextRegistrationPassword.text.toString(),
-                    editTextRegistrationName.text.toString(),
-                    editTextRegistrationSurname.text.toString(),
+                    editTextRegistrationEmail.text.toString().trim(),
+                    editTextRegistrationPassword.text.toString().trim(),
+                    editTextRegistrationName.text.toString().trim(),
+                    editTextRegistrationSurname.text.toString().trim(),
                     editTextRegistrationAge.text.toString().toInt()
                 )
             }
