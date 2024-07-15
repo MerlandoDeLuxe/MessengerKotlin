@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ListOfUsersActivity : AppCompatActivity() {
     private val TAG: String = "ListOfUsersActivity"
-    private lateinit var viewModel: ListOfUsersViewModel
+    private val EXTRA_CURRENT_USER_ID = "current_id"
     private val EXTRA_EMAIL: String = "email"
+    private lateinit var viewModel: ListOfUsersViewModel
     private lateinit var adapter: UserAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var currentUserId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +36,10 @@ class ListOfUsersActivity : AppCompatActivity() {
             insets
         }
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#800F5E93")))
+        currentUserId = intent.getStringExtra(EXTRA_CURRENT_USER_ID).toString()
         initializeAllElements()
         observeViewModel()
+        setupOnClickListeners()
     }
 
     private fun observeViewModel() {
@@ -53,9 +57,17 @@ class ListOfUsersActivity : AppCompatActivity() {
         })
     }
 
-    fun newIntent(context: Context, email: String): Intent {
+    private fun setupOnClickListeners(){
+        adapter.onItemClickListener({
+            val intent = ChatActivity().newIntent(this, currentUserId, it.id)
+            startActivity(intent)
+        })
+    }
+
+    fun newIntent(context: Context, email: String, currentUserId:String): Intent {
         val intent = Intent(context, ListOfUsersActivity::class.java)
         intent.putExtra(EXTRA_EMAIL, email)
+        intent.putExtra(EXTRA_CURRENT_USER_ID, currentUserId)
         return intent
     }
 

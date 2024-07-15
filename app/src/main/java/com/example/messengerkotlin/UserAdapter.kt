@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import org.w3c.dom.Text
 
 class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
     var userList: List<User> = listOf()
@@ -16,8 +15,11 @@ class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
             field = value
             notifyDataSetChanged()
         }
-    lateinit var onUserClickListener: SetOnItemClickListener
+    private lateinit var onItemClickListenerInterface: OnItemClickListener
 
+    fun onItemClickListener(onItemClickListener: OnItemClickListener) {
+        onItemClickListenerInterface = onItemClickListener
+    }
 
     class UserViewHolder(itemView: View) : ViewHolder(itemView) {
         val imageViewUserPhoto = itemView.findViewById<ImageView>(R.id.imageViewUserPhoto)
@@ -53,18 +55,19 @@ class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
             ContextCompat.getDrawable(holder.imageViewUserStatus.context, backgroundIntRes)
         holder.imageViewUserStatus.setImageDrawable(drawable)
 
-        drawable = ContextCompat.getDrawable(holder.imageViewUserPhoto.context, R.drawable.colt_bg_logo)
+        drawable =
+            ContextCompat.getDrawable(holder.imageViewUserPhoto.context, R.drawable.colt_bg_logo)
         holder.imageViewUserPhoto.setImageDrawable(drawable)
 
-//        holder.itemView.setOnClickListener({
-//            if (onUserClickListener != null) {
-//                onUserClickListener.onUserClickListener(user)
-//            }
-//        })
+        holder.itemView.setOnClickListener({
+            if (onItemClickListenerInterface != null) {
+                onItemClickListenerInterface.onItemClickListener(user)
+            }
+        })
     }
 
-    fun interface SetOnItemClickListener {
-        fun onUserClickListener(user: User)
+    fun interface OnItemClickListener {
+        fun onItemClickListener(user: User)
     }
 
     override fun getItemCount() = userList.size

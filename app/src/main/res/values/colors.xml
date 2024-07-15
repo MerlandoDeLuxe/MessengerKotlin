@@ -3,4 +3,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background">#800F5E93</color>
+    <color name="my_message_background">#2200ff00</color>
 </resources>

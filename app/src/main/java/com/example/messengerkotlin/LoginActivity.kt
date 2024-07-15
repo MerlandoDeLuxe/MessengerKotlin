@@ -86,7 +86,7 @@ class LoginActivity : AppCompatActivity() {
 
         viewModel.firebaseUserLD.observe(this) {
             if (it != null) {
-                val intent = ListOfUsersActivity().newIntent(this, EXTRA_EMAIL)
+                val intent = ListOfUsersActivity().newIntent(this, EXTRA_EMAIL, it.uid)
                 startActivity(intent)
                 editTextTextPassword.setText("");
                 finish()

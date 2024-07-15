@@ -24,4 +24,5 @@
     <string name="success_send_email">Ссылка на восстановление отправлена на указанную почту</string>
     <string name="error_send_email">Некорректный формат почты</string>
     <string name="user_created">Пользователь создан</string>
+    <string name="type_your_message">Сообщение</string>
 </resources>

@@ -1,29 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Messenger</string>
-    <string name="password">Password</string>
-    <string name="your_email">Your email</string>
-    <string name="surname">Surname</string>
-    <string name="name">Name</string>
-    <string name="age">Age</string>
-    <string name="registration">Registration</string>
-    <string name="enter_password">Enter your password</string>
-    <string name="enter_email">Enter your email</string>
-    <string name="enter">Login</string>
-    <string name="forgot_password">Forgot password?</string>
-    <string name="wrong_email_registration">Email can not be empty</string>
-    <string name="wrong_password_registration">Password can not be empty</string>
-    <string name="wrong_password_length_registration">Password length cannot be shorter than %d characters</string>
-    <string name="wrong_name_registration">Name can not be empty</string>
-    <string name="wrong_surname_registration">Surname can not be empty</string>
-    <string name="wrong_age_registration">Age can not be empty</string>
-    <string name="password_recovery">Password recovery</string>
-    <string name="send_to_email">Send by email</string>
-    <string name="success_registration">Success registration</string>
-    <string name="login_or_password_is_empty">Login or password can not be empty</string>
-    <string name="logout">Logout</string>
-    <string name="success_send_email">A recovery link has been sent to the specified email.</string>
-    <string name="error_send_email">Incorrect mail format</string>
-    <string name="user_created">User created</string>
-
+    <string name="app_name">Colt Messenger Java</string>
+    <string name="password">Пароль</string>
+    <string name="your_email">Ваш email</string>
+    <string name="surname">Фамилия</string>
+    <string name="name">Имя</string>
+    <string name="age">Возраст</string>
+    <string name="registration">Регистрация</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="enter_email">Введите email</string>
+    <string name="enter">Вход</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="wrong_email_registration">Почта не может быть пустой</string>
+    <string name="wrong_password_registration">Пароль не может быть пустым</string>
+    <string name="wrong_password_length_registration">Длина пароля не может быть короче %d символов</string>
+    <string name="wrong_name_registration">Имя не может быть пустым</string>
+    <string name="wrong_surname_registration">Фамилия не может быть пустой</string>
+    <string name="wrong_age_registration">Возраст не может быть пустым</string>
+    <string name="password_recovery">Восстановление пароля</string>
+    <string name="send_to_email">Отправить на почту</string>
+    <string name="success_registration">Регистрация прошла успешно</string>
+    <string name="login_or_password_is_empty">Не заполнен логин или пароль</string>
+    <string name="logout">Выйти</string>
+    <string name="success_send_email">Ссылка на восстановление отправлена на указанную почту</string>
+    <string name="error_send_email">Некорректный формат почты</string>
+    <string name="user_created">Пользователь создан</string>
+    <string name="type_your_message">Message</string>
 </resources>
