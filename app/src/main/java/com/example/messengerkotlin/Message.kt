@@ -1,13 +1,13 @@
 package com.example.messengerkotlin
 
 class Message () {
-    lateinit var text: String
     lateinit var myId: String
     lateinit var otherId: String
+    lateinit var text: String
 
-    constructor(text: String, myId: String, otherId: String) :this () {
-        this.text = text
+    constructor(myId: String, otherId: String, text: String) :this () {
         this.myId = myId
         this.otherId = otherId
+        this.text = text
     }
 }

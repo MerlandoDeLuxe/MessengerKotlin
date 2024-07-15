@@ -47,10 +47,10 @@ class ChatActivity : AppCompatActivity() {
         val messages: MutableList<Message> = mutableListOf()
         for (i in 0..10) {
             if (i % 2 == 0) {
-                messages.add(i, Message("Мое тестовое сообщение", currentUserId, otherUserId))
+                messages.add(i, Message(currentUserId, otherUserId, "Мое тестовое сообщение"))
             }
             else{
-                messages.add(i, Message("Чужое тестовое сообщение", otherUserId, currentUserId))
+                messages.add(i, Message(otherUserId, currentUserId,"Чужое тестовое сообщение"))
             }
         }
         adapter.messages = messages
