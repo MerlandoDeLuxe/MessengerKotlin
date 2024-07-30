@@ -25,4 +25,6 @@
     <string name="error_send_email">Некорректный формат почты</string>
     <string name="user_created">Пользователь создан</string>
     <string name="type_your_message">Сообщение</string>
+    <string name="user_photo">Фотография пользователя</string>
+    <string name="send_message_to_this_user">Отправить сообщение пользователю</string>
 </resources>

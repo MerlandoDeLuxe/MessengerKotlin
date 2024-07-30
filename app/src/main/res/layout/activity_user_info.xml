@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".UserInfoActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageViewUserPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/user_photo"
+            android:maxHeight="400dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/colt_bg_logo" />
+
+        <ImageView
+            android:id="@+id/imageViewUserStatus"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/circle_green_online" />
+
+        <ImageView
+            android:id="@+id/imageViewSendMessage"
+            android:layout_width="39dp"
+            android:layout_height="41dp"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/send_message_to_this_user"
+            app:layout_constraintBottom_toBottomOf="@+id/imageViewUserPhoto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewUserPhoto"
+            app:srcCompat="@drawable/write_message" />
+
+        <TextView
+            android:id="@+id/textViewUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/textViewUserSurname"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewUserPhoto"
+            tools:text="Имя" />
+
+        <TextView
+            android:id="@+id/textViewUserSurname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textColor="@android:color/background_dark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/textViewUserName"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewUserPhoto"
+            tools:text="Фамилия" />
+
+        <TextView
+            android:id="@+id/textViewUserAge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:textColor="@android:color/background_dark"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/textViewUserSurname"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewUserPhoto"
+            tools:text="30" />
+
+        <TextView
+            android:id="@+id/textViewUserInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:padding="8dp"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewUserSurname"
+            tools:text="Съешь ещё этих мягких французских булок, да выпей же чаю. Эй, жлоб! Где туз? Прячь юных съёмщиц в шкаф" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

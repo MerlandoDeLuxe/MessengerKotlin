@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +15,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.FirebaseDatabase
 
 class ListOfUsersActivity : AppCompatActivity() {
     private val TAG: String = "ListOfUsersActivity"
@@ -25,6 +25,10 @@ class ListOfUsersActivity : AppCompatActivity() {
     private lateinit var adapter: UserAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var currentUserId: String
+
+
+    private val database = FirebaseDatabase.getInstance()
+    private val reference = database.getReference("Messages")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,31 +44,34 @@ class ListOfUsersActivity : AppCompatActivity() {
         initializeAllElements()
         observeViewModel()
         setupOnClickListeners()
+
     }
 
     private fun observeViewModel() {
         viewModel.userLD.observe(this) {
             if (it == null) {
+                //мониторим, если юзер незалогинен - закрываем список пользователей и уходим на активити логина
                 Log.d(TAG, "observeViewModel: useremail = ${viewModel.userEmail}")
                 finish()
                 val intent = LoginActivity().newIntent(this, viewModel.userEmail)
                 startActivity(intent)
             }
         }
+        //получаем список пользователей и отправляем их в адаптер
         viewModel.getUsersFromDb()
         viewModel.userListLD.observe(this, {
             adapter.userList = it
         })
     }
 
-    private fun setupOnClickListeners(){
+    private fun setupOnClickListeners() {
         adapter.onItemClickListener({
-            val intent = ChatActivity().newIntent(this, currentUserId, it.id)
+            val intent = UserInfoActivity().newIntent(this, currentUserId, it.id, it.name, it.surname, it.age.toString())
             startActivity(intent)
         })
     }
 
-    fun newIntent(context: Context, email: String, currentUserId:String): Intent {
+    fun newIntent(context: Context, email: String, currentUserId: String): Intent {
         val intent = Intent(context, ListOfUsersActivity::class.java)
         intent.putExtra(EXTRA_EMAIL, email)
         intent.putExtra(EXTRA_CURRENT_USER_ID, currentUserId)
@@ -89,5 +96,15 @@ class ListOfUsersActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewUsers)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(this, 3)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.setUserOnline(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.setUserOnline(true)
     }
 }

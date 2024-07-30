@@ -47,7 +47,7 @@ class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
         holder.textViewUserAge.text = user.age.toString()
 
         var backgroundIntRes: Int
-        if (user.isOnline) {
+        if (user.online) {
             backgroundIntRes = R.drawable.circle_green_online
         } else backgroundIntRes = R.drawable.circle_red_offline
 

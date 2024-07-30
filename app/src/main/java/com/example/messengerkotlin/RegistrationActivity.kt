@@ -128,6 +128,7 @@ class RegistrationActivity : AppCompatActivity() {
             }
         }
     }
+
     fun newIntent(context: Context) = Intent(context, RegistrationActivity::class.java)
 
     private fun initializeAllElements(){

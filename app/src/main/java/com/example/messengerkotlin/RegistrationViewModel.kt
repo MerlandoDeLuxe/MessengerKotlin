@@ -13,11 +13,11 @@ import com.google.firebase.database.database
 
 class RegistrationViewModel(application: Application) : AndroidViewModel(application) {
     private val TAG: String = "RegistrationViewModel"
-    private val auth = Firebase.auth
     val userLD = MutableLiveData<FirebaseUser>()
     val wrongAuthTextLD = MutableLiveData<String>()
-    val database = Firebase.database
-    val referenceUser = database.getReference("Users")
+    private val database = FirebaseDatabase.getInstance()
+    private val referenceUser = database.getReference("Users")
+    private val auth = FirebaseAuth.getInstance()
 
     fun createUser(
         email: String,
