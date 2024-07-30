@@ -58,7 +58,6 @@ class ListOfUsersActivity : AppCompatActivity() {
             }
         }
         //получаем список пользователей и отправляем их в адаптер
-        viewModel.getUsersFromDb()
         viewModel.userListLD.observe(this, {
             adapter.userList = it
         })

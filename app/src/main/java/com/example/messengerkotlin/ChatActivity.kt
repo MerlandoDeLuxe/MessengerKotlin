@@ -77,7 +77,7 @@ class ChatActivity : AppCompatActivity() {
         viewModel.messagesLD.observe(this) {
             adapter.messages = it
             if (adapter.itemCount > 0) {
-                recycleViewMessages.smoothScrollToPosition(adapter.itemCount - 1)
+                recycleViewMessages.scrollToPosition(adapter.itemCount - 1)
             }
         }
         //Если вдруг возникла ошибка, то:

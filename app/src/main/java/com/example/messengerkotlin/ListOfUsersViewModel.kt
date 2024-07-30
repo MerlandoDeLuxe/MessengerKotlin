@@ -4,6 +4,7 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
@@ -12,7 +13,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 
-class ListOfUsersViewModel(application: Application) : AndroidViewModel(application) {
+class ListOfUsersViewModel
+    () : ViewModel() {
     private val TAG: String = "ListOfUsersViewModel"
     private val auth = Firebase.auth
     private val user = auth.currentUser
@@ -21,20 +23,20 @@ class ListOfUsersViewModel(application: Application) : AndroidViewModel(applicat
     private val database = Firebase.database
     private val referenceUsers = database.getReference("Users")
     val userListLD: MutableLiveData<List<User>> = MutableLiveData()
-    private val listOfUsersFromDb: MutableList<User> = mutableListOf()
 
-    fun getUsersFromDb() {
+    init {
         referenceUsers.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val currentUser = auth.currentUser
-                if (currentUser != null)
+                if (currentUser != null) {
+
+                    val listOfUsersFromDb: MutableList<User> = mutableListOf()
+
                     for (snap in snapshot.children) {
                         val user = snap.getValue(User::class.java)
                         if (user != null) {
                             if (!currentUser.uid.equals(user.id)) {
-                                Log.d(TAG, "onDataChange: listOfUsersFromDb = $listOfUsersFromDb")
                                 listOfUsersFromDb.add(user)
-                                Log.d(TAG, "onDataChange: listOfUsersFromDb = $listOfUsersFromDb")
                             }
                             if (currentUser.uid.equals(user.id)) {//Установка приоритета для дальнейшей сортировки
                                 //чтобы текущий юзер всегда был первый в списке
@@ -43,8 +45,9 @@ class ListOfUsersViewModel(application: Application) : AndroidViewModel(applicat
                             }
                         }
                     }
-                listOfUsersFromDb.sortByDescending { it.priority } //Сортируем по приоритету
-                userListLD.value = listOfUsersFromDb
+                    listOfUsersFromDb.sortByDescending { it.priority } //Сортируем по приоритету
+                    userListLD.value = listOfUsersFromDb
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
