@@ -27,4 +27,10 @@
     <string name="type_your_message">Сообщение</string>
     <string name="user_photo">Фотография пользователя</string>
     <string name="send_message_to_this_user">Отправить сообщение пользователю</string>
+    <string name="profile">Профиль</string>
+    <string name="your_name">Ваше имя</string>
+    <string name="your_surname">Возраст</string>
+    <string name="about_you">О себе</string>
+    <string name="text_about_yourself">Вы можете добавить несколько строк о себе</string>
+    <string name="back_to_userinfo">Вернуться к информации о пользователе</string>
 </resources>

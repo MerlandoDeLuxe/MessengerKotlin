@@ -24,9 +24,11 @@
 
     <ImageView
         android:id="@+id/imageViewUserStatus"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_margin="16dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="52dp"
         app:layout_constraintBottom_toBottomOf="@+id/textViewTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textViewTitle"

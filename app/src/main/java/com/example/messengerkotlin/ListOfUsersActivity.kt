@@ -65,7 +65,7 @@ class ListOfUsersActivity : AppCompatActivity() {
 
     private fun setupOnClickListeners() {
         adapter.onItemClickListener({
-            val intent = UserInfoActivity().newIntent(this, currentUserId, it.id, it.name, it.surname, it.age.toString())
+            val intent = UserInfoActivity().newIntent(this, currentUserId, it.id, it.name, it.surname, it.age.toString(), it.userInfo, it.online)
             startActivity(intent)
         })
     }

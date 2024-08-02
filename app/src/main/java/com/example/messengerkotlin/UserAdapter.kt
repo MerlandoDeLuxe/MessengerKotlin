@@ -44,9 +44,15 @@ class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
         val user = userList.get(position)
         holder.textViewUserName.text = user.name
         holder.textViewUserSurname.text = user.surname
-        holder.textViewUserAge.text = user.age.toString()
+        
+        if (user.age == 0) {
+            holder.textViewUserAge.visibility = TextView.INVISIBLE
+        } else {
+            holder.textViewUserAge.visibility = TextView.VISIBLE
+            holder.textViewUserAge.text = user.age.toString()
+        }
 
-        var backgroundIntRes: Int
+        val backgroundIntRes: Int
         if (user.online) {
             backgroundIntRes = R.drawable.circle_green_online
         } else backgroundIntRes = R.drawable.circle_red_offline

@@ -15,6 +15,7 @@ class UserInfoViewModel (private val otherUserId: String): ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val user = auth.currentUser
     val otherUserLD: MutableLiveData<User> = MutableLiveData()
+    val currentUserLD: MutableLiveData<User> = MutableLiveData()
 
     //Получаем пользователя с кем общаемся, записываем его в лайв дату
     fun getOtherUserData(){
@@ -28,6 +29,21 @@ class UserInfoViewModel (private val otherUserId: String): ViewModel() {
                 TODO("Not yet implemented")
             }
         })
+    }
+
+    fun getCurrentUser(){
+        if(user != null) {
+            referenceUser.child(user.uid).addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val user = snapshot.getValue(User::class.java)
+                    currentUserLD.value = user
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+            })
+        }
     }
 
     //текущему пользователю ставим статус в сети или нет
