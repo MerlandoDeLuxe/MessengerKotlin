@@ -26,4 +26,11 @@
     <string name="user_created">Пользователь создан</string>
     <string name="type_your_message">Message</string>
     <string name="user_photo">Фотография пользователя</string>
+    <string name="send_message_to_this_user">Send a message to the client</string>
+    <string name="profile">Profile</string>
+    <string name="your_name">Your name</string>
+    <string name="your_surname">Age</string>
+    <string name="about_you">About me</string>
+    <string name="text_about_yourself">You can add a few lines about yourself</string>
+    <string name="back_to_userinfo">Back to UserInfo</string>
 </resources>

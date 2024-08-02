@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 
 class RegistrationActivity : AppCompatActivity() {
     private val TAG: String = "RegistrationActivity"
+
     private lateinit var viewModel: RegistrationViewModel
     private lateinit var editTextRegistrationEmail: EditText
     private lateinit var editTextRegistrationPassword: EditText

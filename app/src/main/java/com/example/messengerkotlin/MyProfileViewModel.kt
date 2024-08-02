@@ -12,13 +12,16 @@ import com.google.firebase.database.ValueEventListener
 class MyProfileViewModel : ViewModel() {
     private val TAG = "MyProfileViewModel"
     private val ADMIN_EMAIL_ACCOUNT = "merlandodeluxe@gmail.com"
-    private val newFieldToDatabase = "countUnreadMessages"
+    private val newChildDatabase = "countUnreadMessages"
+    private val USER_CHILD_STATUS = "online"
+
     private val database = FirebaseDatabase.getInstance()
     private val referenceUser = database.getReference("Users")
+
     private val auth = FirebaseAuth.getInstance();
     private val user = auth.currentUser
-    val surname: MutableLiveData<String> = MutableLiveData()
-    val isUserAdmin: MutableLiveData<Boolean> = MutableLiveData()
+
+    val isUserAdminLD: MutableLiveData<Boolean> = MutableLiveData()
 
     fun saveUserData(name: String, surname: String, age: Int, userInfo: String) {
         if (user != null) {
@@ -31,10 +34,10 @@ class MyProfileViewModel : ViewModel() {
 
     fun checkAdminUser(){
         if (user?.email.equals(ADMIN_EMAIL_ACCOUNT)) {
-            isUserAdmin.value = true
+            isUserAdminLD.value = true
         }
         else{
-            isUserAdmin.value = false
+            isUserAdminLD.value = false
         }
     }
 
@@ -47,9 +50,9 @@ class MyProfileViewModel : ViewModel() {
                     for (snap in snapshot.children){
 //                        val user = snap.getValue(User::class.java)!!
                         val hashMap = HashMap<String, Any>()
-                        hashMap[newFieldToDatabase] = 0 //Сразу значение для вставки всем пользователям в это поле
+                        hashMap[newChildDatabase] = 0 //Сразу значение для вставки всем пользователям в это поле
                         snap.ref.updateChildren(hashMap)
-                        Log.d(TAG, "onDataChange: выполнена вставка поля $newFieldToDatabase в БД для всех пользователей")
+                        Log.d(TAG, "onDataChange: выполнена вставка поля $newChildDatabase в БД для всех пользователей")
                     }
                 }
 
@@ -59,7 +62,10 @@ class MyProfileViewModel : ViewModel() {
             })
         }
     }
-    fun getSurname(){
 
+    fun setUserOnline(isOnline: Boolean){
+        if (user !=null){
+            referenceUser.child(user.uid).child(USER_CHILD_STATUS).setValue(isOnline)
+        }
     }
 }

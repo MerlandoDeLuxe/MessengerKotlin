@@ -16,11 +16,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.FirebaseDatabase
+import kotlin.math.log
 
 class ListOfUsersActivity : AppCompatActivity() {
     private val TAG: String = "ListOfUsersActivity"
     private val EXTRA_CURRENT_USER_ID = "current_id"
     private val EXTRA_EMAIL: String = "email"
+
     private lateinit var viewModel: ListOfUsersViewModel
     private lateinit var adapter: UserAdapter
     private lateinit var recyclerView: RecyclerView
@@ -65,6 +67,7 @@ class ListOfUsersActivity : AppCompatActivity() {
 
     private fun setupOnClickListeners() {
         adapter.onItemClickListener({
+            Log.d(TAG, "setupOnClickListeners: Online = ${it.online}")
             val intent = UserInfoActivity().newIntent(this, currentUserId, it.id, it.name, it.surname, it.age.toString(), it.userInfo, it.online)
             startActivity(intent)
         })
@@ -99,6 +102,7 @@ class ListOfUsersActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        Log.d(TAG, "onPause: ")
         viewModel.setUserOnline(false)
     }
 

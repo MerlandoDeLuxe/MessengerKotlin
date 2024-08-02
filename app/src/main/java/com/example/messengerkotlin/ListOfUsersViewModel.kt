@@ -1,8 +1,5 @@
 package com.example.messengerkotlin
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
@@ -16,13 +13,18 @@ import com.google.firebase.database.database
 class ListOfUsersViewModel
     () : ViewModel() {
     private val TAG: String = "ListOfUsersViewModel"
+
     private val auth = Firebase.auth
     private val user = auth.currentUser
     var userEmail: String? = auth.currentUser?.email
+
     var userLD: MutableLiveData<FirebaseUser> = MutableLiveData<FirebaseUser>()
+    val userListLD: MutableLiveData<List<User>> = MutableLiveData()
+
     private val database = Firebase.database
     private val referenceUsers = database.getReference("Users")
-    val userListLD: MutableLiveData<List<User>> = MutableLiveData()
+    private val USER_CHILD_STATUS = "online"
+
 
     init {
         referenceUsers.addValueEventListener(object : ValueEventListener {
@@ -58,7 +60,7 @@ class ListOfUsersViewModel
 
     fun setUserOnline(isOnline: Boolean) {
         if (user != null) {
-            referenceUsers.child(user.uid).child("online").setValue(isOnline)
+            referenceUsers.child(user.uid).child(USER_CHILD_STATUS).setValue(isOnline)
         }
     }
 

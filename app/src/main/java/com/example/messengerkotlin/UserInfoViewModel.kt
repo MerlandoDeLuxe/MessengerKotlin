@@ -14,6 +14,7 @@ class UserInfoViewModel (private val otherUserId: String): ViewModel() {
     private val referenceUser = database.getReference("Users")
     private val auth = FirebaseAuth.getInstance()
     private val user = auth.currentUser
+
     val otherUserLD: MutableLiveData<User> = MutableLiveData()
     val currentUserLD: MutableLiveData<User> = MutableLiveData()
 

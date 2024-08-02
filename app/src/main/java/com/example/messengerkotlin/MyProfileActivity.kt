@@ -26,8 +26,10 @@ class MyProfileActivity : AppCompatActivity() {
     private lateinit var editTextYourAge: EditText
     private lateinit var editTextYourInfo: EditText
     private lateinit var buttonSaveAndBack: ImageView
-    private lateinit var viewModel: MyProfileViewModel
     private lateinit var imageViewSetChanges: ImageView
+
+    private lateinit var viewModel: MyProfileViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +52,7 @@ class MyProfileActivity : AppCompatActivity() {
 
     fun observeViewModel() {
         viewModel.checkAdminUser()
-        viewModel.isUserAdmin.observe(this, {
+        viewModel.isUserAdminLD.observe(this, {
             if (it) {
                 imageViewSetChanges.visibility = ImageView.VISIBLE
             } else {
@@ -108,6 +110,17 @@ class MyProfileActivity : AppCompatActivity() {
         buttonSaveAndBack = findViewById(R.id.buttonSaveAndBack)
         imageViewSetChanges = findViewById(R.id.imageViewSetChanges)
         viewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause: ")
+        viewModel.setUserOnline(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.setUserOnline(true)
     }
 
     override fun onDestroy() {

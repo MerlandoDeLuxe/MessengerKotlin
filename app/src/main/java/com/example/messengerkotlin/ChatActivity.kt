@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Message
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -143,6 +144,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        Log.d(TAG, "onPause: ")
         viewModel.setUserOnline(false)
     }
 

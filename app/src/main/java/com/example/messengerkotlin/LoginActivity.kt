@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -17,23 +18,27 @@ import androidx.lifecycle.ViewModelProvider
 
 class LoginActivity : AppCompatActivity() {
     private val TAG: String = "LoginActivity"
+    private val EXTRA_EMAIL: String = "email"
+
     lateinit var editTextTextEmailAddress: EditText
     lateinit var editTextTextPassword: EditText
     lateinit var loginButton: Button
     lateinit var textViewForgotPassword: TextView
     lateinit var textViewRegistration: TextView
+
     lateinit var viewModel: LoginViewModel
-    private val EXTRA_EMAIL: String = "email"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
+       // enableEdgeToEdge()
+
         setContentView(R.layout.activity_login)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        //window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         initializeAllElements()
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#800F5E93")))
         editTextTextEmailAddress.setText(intent.getStringExtra(EXTRA_EMAIL))

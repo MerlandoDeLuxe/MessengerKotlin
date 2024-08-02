@@ -26,9 +26,7 @@ class UserInfoActivity : AppCompatActivity() {
     private val EXTRA_USER_INFO = "userInfo"
     private val EXTRA_USER = "extra_user"
     private val EXTRA_USER_ONLINE = "online"
-    private lateinit var name: String
-    private lateinit var surname: String
-    private lateinit var age: String
+
     private lateinit var imageViewUserPhoto: ImageView
     private lateinit var imageViewSendMessage: ImageView
     private lateinit var textViewUserName: TextView
@@ -37,6 +35,10 @@ class UserInfoActivity : AppCompatActivity() {
     private lateinit var textViewUserInfo: TextView
     private lateinit var imageViewUserStatus: ImageView
     private lateinit var imageViewToYourProfile: ImageView
+
+    private lateinit var name: String
+    private lateinit var surname: String
+    private lateinit var age: String
     private lateinit var currentUserId: String
     private lateinit var otherUserId: String
     private lateinit var userInfo: String
@@ -54,13 +56,16 @@ class UserInfoActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        Log.d(TAG, "onCreate: UserInfoActivity 1, online = $online")
         name = intent.getStringExtra(EXTRA_NAME).toString()
         surname = intent.getStringExtra(EXTRA_SURNAME).toString()
         age = intent.getStringExtra(EXTRA_AGE).toString()
         currentUserId = intent.getStringExtra(EXTRA_CURRENT_USER_ID).toString()
         otherUserId = intent.getStringExtra(EXTRA_OTHER_USER_ID).toString()
         userInfo = intent.getStringExtra(EXTRA_USER_INFO).toString()
-        online = intent.getStringExtra(EXTRA_USER_ONLINE).toBoolean()
+        online = intent.extras?.getBoolean(EXTRA_USER_ONLINE) ?: false
+
+        Log.d(TAG, "onCreate: UserInfoActivity 2, online = $online")
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#800F5E93")))
         initializeAllElements()
 
@@ -71,13 +76,13 @@ class UserInfoActivity : AppCompatActivity() {
 
         setupOnClickListeners()
         observeViewModel()
+        showOtherUserInfo()
         if (currentUserId.equals(otherUserId)) {
             imageViewSendMessage.visibility = ImageView.INVISIBLE
             imageViewUserStatus.visibility = ImageView.INVISIBLE
             showCurrentUserInfo()
         } else {
             imageViewToYourProfile.visibility = ImageView.INVISIBLE
-            showOtherUserInfo()
         }
     }
 
@@ -137,6 +142,7 @@ class UserInfoActivity : AppCompatActivity() {
             var drawable =
                 ContextCompat.getDrawable(this, backgroundIntRes)
             imageViewUserStatus.setImageDrawable(drawable)
+            Log.d(TAG, "onCreate: UserInfoActivity 4, online = $online")
         }
     }
     fun newIntent(
@@ -189,4 +195,5 @@ class UserInfoActivity : AppCompatActivity() {
         super.onResume()
         viewModel.setUserOnline(true)
     }
+
 }

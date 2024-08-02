@@ -13,6 +13,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private val TAG: String = "LoginViewModel"
     private var auth: FirebaseAuth = Firebase.auth
+
     val firebaseUserLD = MutableLiveData<FirebaseUser>()
     val authErrorMessageLD = MutableLiveData<String>()
     val isAuthSuccessLD = MutableLiveData(false)
