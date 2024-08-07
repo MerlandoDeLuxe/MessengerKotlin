@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
@@ -13,6 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+
 
 class MyProfileActivity : AppCompatActivity() {
     private val TAG = "MyProfileActivity"
@@ -27,9 +33,16 @@ class MyProfileActivity : AppCompatActivity() {
     private lateinit var editTextYourInfo: EditText
     private lateinit var buttonSaveAndBack: ImageView
     private lateinit var imageViewSetChanges: ImageView
+    private lateinit var imageViewChangeUserPhoto: ImageView
 
     private lateinit var viewModel: MyProfileViewModel
+    private lateinit var adapter: UserPhotoAdapter
+    private lateinit var recycleViewUserPhoto: RecyclerView
 
+    //    private lateinit var cropImageView: CropImageView
+    lateinit var uri: Uri
+
+    private lateinit var imageViewFromCropImage: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +61,7 @@ class MyProfileActivity : AppCompatActivity() {
         editTextYourInfo.setText(intent.getStringExtra(EXTRA_USER_INFO))
         observeViewModel()
         setupOnClickListeners()
+        viewModel.getAllUserPhotos()
     }
 
     fun observeViewModel() {
@@ -59,6 +73,11 @@ class MyProfileActivity : AppCompatActivity() {
                 imageViewSetChanges.visibility = ImageView.INVISIBLE
             }
         })
+
+        viewModel.pathToPhotoLD.observe(this, {
+            Log.d(TAG, "observeViewModel: it = $it")
+            adapter.urlUserPhotoList = it
+        })
     }
 
     fun setupOnClickListeners() {
@@ -66,10 +85,19 @@ class MyProfileActivity : AppCompatActivity() {
             saveUserData()
             finish()
         }
-
+        //==============================================================================
         imageViewSetChanges.setOnClickListener({
             viewModel.updateAllUsers()
         })
+
+        //==============================================================================
+        imageViewChangeUserPhoto.setOnClickListener({
+
+          //  viewModel.getAllUserPhotos()
+
+        })
+
+
     }
 
     fun saveUserData() {
@@ -109,7 +137,32 @@ class MyProfileActivity : AppCompatActivity() {
         editTextYourInfo = findViewById(R.id.editTextYourInfo)
         buttonSaveAndBack = findViewById(R.id.buttonSaveAndBack)
         imageViewSetChanges = findViewById(R.id.imageViewSetChanges)
+        imageViewChangeUserPhoto = findViewById(R.id.imageViewChangeUserPhoto)
+        recycleViewUserPhoto = findViewById(R.id.recycleViewUserPhoto)
+        adapter = UserPhotoAdapter()
+        recycleViewUserPhoto.adapter = adapter
+        recycleViewUserPhoto.layoutManager = LinearLayoutManager(this)
+//        imageViewFromCropImage = findViewById(R.id.imageViewFromCropImage)
+//        cropImageView = findViewById(com.canhub.cropper.R.id.cropImageView)
+
+
+//
         viewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
+//
+//        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
+//            it?.let { uri ->
+//               // imageViewFromCropImage.setImageURI(uri)
+//                viewModel.changeUserPhoto(uri)
+//            }
+//        }
+//
+//        uri = Uri.parse("https://firebasestorage.googleapis.com/v0/b/messengerkotlin-f6258.appspot.com/o/UserPhotoGallery%2F6v9ugEJ03iP0fkMxXkgmoBqSzzG3%2FOpenPhotos%2F5035634689829044033?alt=media&token=b704c40e-812b-45ae-8d4c-5ada2d69345a")
+//        val draweeView = findViewById<SimpleDraweeView>(R.id.my_image_view) as SimpleDraweeView
+//        draweeView.setImageURI(uri)
+//
+//
+//        cropImageView.setImageUriAsync(uri)
+//        cropImageView.setImageUriAsync(uri)
     }
 
     override fun onPause() {

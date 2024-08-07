@@ -1,5 +1,6 @@
 package com.example.messengerkotlin
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
@@ -36,7 +37,10 @@ class ListOfUsersViewModel
 
                     for (snap in snapshot.children) {
                         val user = snap.getValue(User::class.java)
+                        Log.d(TAG, "onDataChange: user = $user")
+                        Log.d(TAG, "onDataChange: user.id = $user.id")
                         if (user != null) {
+
                             if (!currentUser.uid.equals(user.id)) {
                                 listOfUsersFromDb.add(user)
                             }
@@ -45,6 +49,8 @@ class ListOfUsersViewModel
                                 user.priority = 1
                                 listOfUsersFromDb.add(user)
                             }
+                        } else {
+                            return
                         }
                     }
                     listOfUsersFromDb.sortByDescending { it.priority } //Сортируем по приоритету

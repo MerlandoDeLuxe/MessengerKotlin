@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,7 +18,16 @@
         tools:layout_editor_absoluteX="-1dp"
         tools:layout_editor_absoluteY="52dp">
 
-
+        <ImageView
+            android:id="@+id/imageViewChangeUserPhoto"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/_15759_camera_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_goneMarginBaseline="8dp" />
 
         <TextView
             android:id="@+id/textView1"
@@ -202,6 +212,25 @@
             app:layout_constraintStart_toEndOf="@+id/textView1"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_manage" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/imageViewFromCropImage"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/editTextYourInfo"-->
+<!--            tools:srcCompat="@tools:sample/avatars" />-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleViewUserPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextYourInfo"
+            tools:listitem="@layout/user_photo_template" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

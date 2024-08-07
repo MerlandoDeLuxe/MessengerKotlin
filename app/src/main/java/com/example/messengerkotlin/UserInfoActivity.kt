@@ -102,6 +102,8 @@ class UserInfoActivity : AppCompatActivity() {
             )
             startActivity(intent)
         })
+        //=================================================================================
+
     }
 
     fun observeViewModel() {
@@ -181,6 +183,7 @@ class UserInfoActivity : AppCompatActivity() {
         textViewUserInfo = findViewById(R.id.textViewUserInfo)
         imageViewUserStatus = findViewById(R.id.imageViewUserStatus)
         imageViewToYourProfile = findViewById(R.id.imageViewToYourProfile)
+
         adapter = UserAdapter()
         viewModelFactory = UserInfoViewModelFactory(otherUserId)
         viewModel = ViewModelProvider(this, viewModelFactory).get(UserInfoViewModel::class.java)
