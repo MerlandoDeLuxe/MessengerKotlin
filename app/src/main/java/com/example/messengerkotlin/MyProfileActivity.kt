@@ -15,10 +15,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-
 
 class MyProfileActivity : AppCompatActivity() {
     private val TAG = "MyProfileActivity"
@@ -26,6 +23,8 @@ class MyProfileActivity : AppCompatActivity() {
     private val EXTRA_SURNAME = "surname"
     private val EXTRA_AGE = "age"
     private val EXTRA_USER_INFO = "userInfo"
+    private val EXTRA_CURRENT_USER_ID = "current_id"
+    private val EXTRA_OTHER_USER_ID = "other_id"
 
     private lateinit var editTextYourName: EditText
     private lateinit var editTextYourSurname: EditText
@@ -38,6 +37,9 @@ class MyProfileActivity : AppCompatActivity() {
     private lateinit var viewModel: MyProfileViewModel
     private lateinit var adapter: UserPhotoAdapter
     private lateinit var recycleViewUserPhoto: RecyclerView
+
+    private lateinit var currentUserId: String
+    private lateinit var otherUserId: String
 
     //    private lateinit var cropImageView: CropImageView
     lateinit var uri: Uri
@@ -55,29 +57,36 @@ class MyProfileActivity : AppCompatActivity() {
         }
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#800F5E93")))
         initializeAllElements()
+        currentUserId = intent.getStringExtra(EXTRA_CURRENT_USER_ID).toString()
+        otherUserId = intent.getStringExtra(EXTRA_OTHER_USER_ID).toString()
         editTextYourName.setText(intent.getStringExtra(EXTRA_NAME))
         editTextYourSurname.setText(intent.getStringExtra(EXTRA_SURNAME))
         editTextYourAge.setText(intent.getStringExtra(EXTRA_AGE))
         editTextYourInfo.setText(intent.getStringExtra(EXTRA_USER_INFO))
         observeViewModel()
         setupOnClickListeners()
-        viewModel.getAllUserPhotos()
+
     }
 
     fun observeViewModel() {
         viewModel.checkAdminUser()
-        viewModel.isUserAdminLD.observe(this, {
+        viewModel.isUserAdminLD.observe(this) {
             if (it) {
                 imageViewSetChanges.visibility = ImageView.VISIBLE
             } else {
                 imageViewSetChanges.visibility = ImageView.INVISIBLE
             }
-        })
+        }
 
-        viewModel.pathToPhotoLD.observe(this, {
-            Log.d(TAG, "observeViewModel: it = $it")
-            adapter.urlUserPhotoList = it
-        })
+        viewModel.userPhotoLD.observe(this) {
+                //Здесь отправляем в адаптер только адреса для отображения. Имя файлов для этого не требуется
+                val tempListOfPhotoUri: MutableList<Uri> = mutableListOf()
+                for ((key, value) in it) {
+                    tempListOfPhotoUri.add(value)
+                }
+            Log.d(TAG, "observeViewModel: вызов адаптера")
+                adapter.urlUserPhotoList = tempListOfPhotoUri
+        }
     }
 
     fun setupOnClickListeners() {
@@ -93,10 +102,12 @@ class MyProfileActivity : AppCompatActivity() {
         //==============================================================================
         imageViewChangeUserPhoto.setOnClickListener({
 
-          //  viewModel.getAllUserPhotos()
-
         })
 
+        adapter.onDeletePhotoClickListener {
+            viewModel.checkSelectedUserPhotoForDelete(it)
+            Log.d(TAG, "setupOnClickListeners: $it")
+        }
 
     }
 
@@ -117,12 +128,16 @@ class MyProfileActivity : AppCompatActivity() {
 
     fun newIntent(
         context: Context,
+        currentUserId: String,
+        otherUserId: String,
         name: String,
         surname: String,
         age: String,
         userInfo: String
     ): Intent {
         val intent = Intent(context, MyProfileActivity::class.java)
+        intent.putExtra(EXTRA_CURRENT_USER_ID, currentUserId)
+        intent.putExtra(EXTRA_OTHER_USER_ID, otherUserId)
         intent.putExtra(EXTRA_NAME, name)
         intent.putExtra(EXTRA_SURNAME, surname)
         intent.putExtra(EXTRA_AGE, age)
@@ -138,10 +153,12 @@ class MyProfileActivity : AppCompatActivity() {
         buttonSaveAndBack = findViewById(R.id.buttonSaveAndBack)
         imageViewSetChanges = findViewById(R.id.imageViewSetChanges)
         imageViewChangeUserPhoto = findViewById(R.id.imageViewChangeUserPhoto)
+
+
         recycleViewUserPhoto = findViewById(R.id.recycleViewUserPhoto)
         adapter = UserPhotoAdapter()
         recycleViewUserPhoto.adapter = adapter
-        recycleViewUserPhoto.layoutManager = LinearLayoutManager(this)
+        recycleViewUserPhoto.layoutManager = GridLayoutManager(this, 1)
 //        imageViewFromCropImage = findViewById(R.id.imageViewFromCropImage)
 //        cropImageView = findViewById(com.canhub.cropper.R.id.cropImageView)
 

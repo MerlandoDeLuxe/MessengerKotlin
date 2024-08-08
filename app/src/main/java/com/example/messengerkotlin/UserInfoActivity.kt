@@ -95,6 +95,8 @@ class UserInfoActivity : AppCompatActivity() {
         imageViewToYourProfile.setOnClickListener({
             val intent = MyProfileActivity().newIntent(
                 this,
+                currentUserId,
+                otherUserId,
                 textViewUserName.text.toString(),
                 textViewUserSurname.text.toString(),
                 textViewUserAge.text.toString(),
@@ -109,7 +111,7 @@ class UserInfoActivity : AppCompatActivity() {
     fun observeViewModel() {
     }
 
-    fun showCurrentUserInfo(){
+    fun showCurrentUserInfo() {
         //Вызываем текущего пользователя чтобы передать обновить его данные на этой странице и затем передать дальше в d MyProfileActivity
         viewModel.getCurrentUser()
         viewModel.currentUserLD.observe(this) {
@@ -127,7 +129,8 @@ class UserInfoActivity : AppCompatActivity() {
             }
         }
     }
-    fun showOtherUserInfo(){
+
+    fun showOtherUserInfo() {
         //Вызываем другого пользователя
         viewModel.getOtherUserData()
         viewModel.otherUserLD.observe(this) {
@@ -147,6 +150,7 @@ class UserInfoActivity : AppCompatActivity() {
             Log.d(TAG, "onCreate: UserInfoActivity 4, online = $online")
         }
     }
+
     fun newIntent(
         context: Context,
         currentUserId: String,

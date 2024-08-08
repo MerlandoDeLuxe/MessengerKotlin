@@ -2,22 +2,17 @@ package com.example.messengerkotlin
 
 import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.LiveData
+import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.component1
-import com.google.firebase.storage.ktx.storage
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.math.log
-import kotlin.random.Random
 
 class MyProfileViewModel : ViewModel() {
     private val TAG = "MyProfileViewModel"
@@ -35,40 +30,78 @@ class MyProfileViewModel : ViewModel() {
 
     private val storage = FirebaseStorage.getInstance()
     private val referenceStorageUserPhoto = storage.getReference("UserPhotoGallery")
-    private val path = "OpenPhotos"
-    val pathToPhotoLD: MutableLiveData<List<Uri>> = MutableLiveData()
+    private val pathToOpenPhotos = "OpenPhotos"
+    val collectionUserPhoto: ConcurrentHashMap<String, Uri> = ConcurrentHashMap()
+    val userPhotoLD: MutableLiveData<ConcurrentHashMap<String, Uri>> = MutableLiveData()
 
+
+    init {
+        getAllUserPhotos() //При инициализации вью модели всегда запрашиваем новые фоточки из Storage
+    }
 
     fun getAllUserPhotos() {
-        val listOfLinks: MutableList<Uri> = mutableListOf()
-
         if (user != null) {
             referenceStorageUserPhoto
                 .child(user.uid)
-                .child(path)
+                .child(pathToOpenPhotos)
                 .listAll()
                 .addOnSuccessListener {
-                    Log.d(TAG, "getAllUserPhotos: it.items = ${it.items}")
-                    Log.d(TAG, "getAllUserPhotos: it.prefix = ${it.prefixes}")
                     for (i in 0..it.items.count() - 1) {
+                        //Пришли в storage по указанному пути, чтобы получить имя фотки и её полную ссылку для скачивания
+                        val name = it.items.get(i).name
+                        Log.d(TAG, "getAllUserPhotos: name = $name")
 
                         it.items.get(i).downloadUrl
                             .addOnSuccessListener {
-                                val temp = it
-                                Log.d(TAG, "getAllUserPhotos: temp = $temp")
-                                listOfLinks.add(temp)
-                            }
-                            .addOnCompleteListener {
-                                pathToPhotoLD.value = listOfLinks
+                                //и добавляем её в коллекцию Map
+                                collectionUserPhoto.put(name, it)
+
+                                //а после успешного добавления всех фоток в лист, добавляем коллекци в Лайв Дату
+                                userPhotoLD.value = collectionUserPhoto
                                 Log.d(
                                     TAG,
-                                    "getAllUserPhotos: pathToPhotoLD = ${pathToPhotoLD.value}"
+                                    "addOnCompleteListener: collectionUserPhoto = ${collectionUserPhoto}"
                                 )
                             }
                     }
                 }
                 .addOnFailureListener {
-                    Log.d(TAG, "getAllUserPhotos: Ошибка: ${it.message}")
+                    Log.d(TAG, "getAllUserPhotos: Ошибка получения списка фотографий из Storage: ${it.message}")
+                }
+        }
+    }
+
+    fun checkSelectedUserPhotoForDelete(uri: Uri) {
+        //Перед полноценным удалением фото, нужно удостовериться, что это именно она
+        //Удаление происходит по ключу (имя объекта в Map и имя объекта в Storage)
+        if (user != null) {
+            referenceStorageUserPhoto
+                .child(user.uid)
+                .child(pathToOpenPhotos)
+                .listAll()
+                .addOnSuccessListener {
+                    for ((key, value) in collectionUserPhoto) {
+                        //Ищем файл в коллекции по Uri который у нас передается в метод и который есть в Map из Storage
+                        if (value.equals(uri)) {
+                            Log.d(
+                                TAG,
+                                "checkSelectedUserPhotoForDelete: Файл найден для удаления: $key}"
+                            )
+                            for (i in 0..it.items.count() - 1) {
+                                //Файл выше был найден, идем в Storage и теперь ищем его по имени (ключу) из коллекции
+                                if (it.items.get(i).name.equals(key)) {
+                                    it.items.get(i).delete()
+                                    Log.d(
+                                        TAG,
+                                        "checkSelectedUserPhotoForDelete: Удаление завершено"
+                                    )
+                                    collectionUserPhoto.remove(key)
+                                    //Файл удалили не только из Storage, но и сразу из коллекции и обновили Лайв Дату для отображения
+                                    userPhotoLD.value = collectionUserPhoto
+                                }
+                            }
+                        }
+                    }
                 }
         }
     }
@@ -82,6 +115,7 @@ class MyProfileViewModel : ViewModel() {
         }
     }
 
+
     fun randomizeUuid(): Long {
         return ThreadLocalRandom.current().nextLong(9_223_327_036_854_775_807)
     }
@@ -91,7 +125,7 @@ class MyProfileViewModel : ViewModel() {
         if (user != null) {
             referenceStorageUserPhoto
                 .child(user.uid)
-                .child(path)
+                .child(pathToOpenPhotos)
                 .child(temp.toString())
                 .putFile(userPhoto)
                 .addOnSuccessListener { Log.d(TAG, "changeUserPhoto: Фото добавлено") }
