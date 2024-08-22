@@ -41,9 +41,10 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-storage:20.2.0")
-
-    implementation("com.vanniktech:android-image-cropper:4.6.0")
+    implementation(libs.android.image.cropper)
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation("androidx.activity:activity-ktx:1.9.1")
+    implementation("com.github.siyamed:android-shape-imageview:0.9.+@aar")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -53,5 +54,21 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("androidx.activity:activity-ktx:1.9.1")
+
+
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.video)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.extensions)
+
+//    implementation (libs.play.services.location)
+//    implementation (libs.play.services.places.v1104)
+//    implementation (libs.rxjava2.rxjava)
+
+//    implementation (libs.android.reactive.location2)
+//    implementation (libs.play.services.location) //you can use newer GMS version if you need
+//    implementation (libs.play.services.places)
+//    implementation (libs.rxjava) //you can override RxJava version if you need
 }

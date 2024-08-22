@@ -4,17 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import java.io.Serializable
+import kotlin.math.log
 
 class UserInfoActivity : AppCompatActivity() {
     private val TAG = "UserInfoActivity"
@@ -26,6 +33,7 @@ class UserInfoActivity : AppCompatActivity() {
     private val EXTRA_USER_INFO = "userInfo"
     private val EXTRA_USER = "extra_user"
     private val EXTRA_USER_ONLINE = "online"
+    private val EXTRA_USER_MAIN_PHOTO = "userMainPhoto"
 
     private lateinit var imageViewUserPhoto: ImageView
     private lateinit var imageViewSendMessage: ImageView
@@ -35,6 +43,7 @@ class UserInfoActivity : AppCompatActivity() {
     private lateinit var textViewUserInfo: TextView
     private lateinit var imageViewUserStatus: ImageView
     private lateinit var imageViewToYourProfile: ImageView
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var name: String
     private lateinit var surname: String
@@ -43,9 +52,11 @@ class UserInfoActivity : AppCompatActivity() {
     private lateinit var otherUserId: String
     private lateinit var userInfo: String
     private var online = false
-    private lateinit var adapter: UserAdapter
+    private lateinit var userMainPhoto: String
+    private lateinit var adapter: UserPhotoAdapter
     private lateinit var viewModelFactory: UserInfoViewModelFactory
     private lateinit var viewModel: UserInfoViewModel
+    private lateinit var recycleViewUserPhoto: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +75,7 @@ class UserInfoActivity : AppCompatActivity() {
         otherUserId = intent.getStringExtra(EXTRA_OTHER_USER_ID).toString()
         userInfo = intent.getStringExtra(EXTRA_USER_INFO).toString()
         online = intent.extras?.getBoolean(EXTRA_USER_ONLINE) ?: false
+        userMainPhoto = intent.getStringExtra(EXTRA_USER_MAIN_PHOTO).toString()
 
         Log.d(TAG, "onCreate: UserInfoActivity 2, online = $online")
         supportActionBar?.setBackgroundDrawable(ColorDrawable(Color.parseColor("#800F5E93")))
@@ -88,7 +100,7 @@ class UserInfoActivity : AppCompatActivity() {
 
     fun setupOnClickListeners() {
         imageViewSendMessage.setOnClickListener({
-            val intent = ChatActivity().newIntent(this, currentUserId, otherUserId)
+            val intent = ChatActivity().newIntent(this, currentUserId, otherUserId, userMainPhoto)
             startActivity(intent)
         })
 
@@ -109,6 +121,35 @@ class UserInfoActivity : AppCompatActivity() {
     }
 
     fun observeViewModel() {
+        viewModel.collectionUserPhotoLD.observe(this) {
+            //Здесь отправляем в адаптер только адреса для отображения. Имя файлов для этого не требуется
+            val tempListOfPhotoUri: MutableList<Uri> = mutableListOf()
+            for ((key, value) in it) {
+                tempListOfPhotoUri.add(value)
+            }
+            Log.d(TAG, "observeViewModel: вызов адаптера")
+            adapter.urlUserPhotoList = tempListOfPhotoUri
+
+        }
+        if (!userMainPhoto.equals("")){
+            Glide.with(this)
+                .load(userMainPhoto)
+                .into(imageViewUserPhoto)
+        }
+        else if(userMainPhoto.equals("")){
+            Glide.with(this)
+                .load(R.drawable.colt_bg_logo)
+                .into(imageViewUserPhoto)
+        }
+
+        viewModel.isPhotosStillLoading.observe(this, {
+            if (it){
+                progressBar.visibility = ProgressBar.VISIBLE
+            }
+            else{
+                progressBar.visibility = ProgressBar.INVISIBLE
+            }
+        })
     }
 
     fun showCurrentUserInfo() {
@@ -159,7 +200,8 @@ class UserInfoActivity : AppCompatActivity() {
         surname: String,
         age: String,
         userInfo: String,
-        online: Boolean
+        online: Boolean,
+        userMainPhoto: String
     ): Intent {
         val intent = Intent(context, UserInfoActivity::class.java)
         intent.putExtra(EXTRA_NAME, name)
@@ -169,6 +211,7 @@ class UserInfoActivity : AppCompatActivity() {
         intent.putExtra(EXTRA_OTHER_USER_ID, otherUserId)
         intent.putExtra(EXTRA_USER_INFO, userInfo)
         intent.putExtra(EXTRA_USER_ONLINE, online)
+        intent.putExtra(EXTRA_USER_MAIN_PHOTO, userMainPhoto)
         return intent
     }
 
@@ -187,8 +230,13 @@ class UserInfoActivity : AppCompatActivity() {
         textViewUserInfo = findViewById(R.id.textViewUserInfo)
         imageViewUserStatus = findViewById(R.id.imageViewUserStatus)
         imageViewToYourProfile = findViewById(R.id.imageViewToYourProfile)
+        recycleViewUserPhoto = findViewById(R.id.recycleViewUserPhoto)
+        progressBar = findViewById(R.id.progressBar)
 
-        adapter = UserAdapter()
+        adapter = UserPhotoAdapter(localClassName)
+        recycleViewUserPhoto.adapter = adapter
+        recycleViewUserPhoto.layoutManager = GridLayoutManager(this, 2)
+
         viewModelFactory = UserInfoViewModelFactory(otherUserId)
         viewModel = ViewModelProvider(this, viewModelFactory).get(UserInfoViewModel::class.java)
     }
@@ -200,7 +248,8 @@ class UserInfoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
         viewModel.setUserOnline(true)
+        viewModel.getAllUserPhotos()
     }
-
 }

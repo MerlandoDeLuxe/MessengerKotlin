@@ -5,24 +5,41 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".UserInfoActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@id/constraintLayout"
+            app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
+            app:layout_constraintStart_toStartOf="@id/constraintLayout"
+            android:visibility="invisible"/>
+
+        <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
             android:id="@+id/imageViewUserPhoto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:adjustViewBounds="true"
             android:contentDescription="@string/user_photo"
             android:maxHeight="400dp"
+            app:layout_constraintBottom_toTopOf="@+id/imageViewSendMessage"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:siShape="@drawable/shape_rounded_rectangle_user_photo_template"
+            app:siSquare="true"
             app:srcCompat="@drawable/colt_bg_logo" />
+
 
         <ImageView
             android:id="@+id/imageViewUserStatus"
@@ -50,6 +67,7 @@
             android:id="@+id/textViewUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:padding="8dp"
             android:textColor="@android:color/background_dark"
             android:textSize="16sp"
@@ -63,6 +81,7 @@
             android:id="@+id/textViewUserSurname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:paddingTop="8dp"
             android:paddingEnd="8dp"
             android:paddingBottom="8dp"
@@ -77,6 +96,7 @@
             android:id="@+id/textViewUserAge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:paddingTop="8dp"
             android:paddingEnd="8dp"
             android:paddingBottom="8dp"
@@ -91,11 +111,14 @@
             android:id="@+id/textViewUserInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:padding="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewUserSurname"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
             tools:text="Съешь ещё этих мягких французских булок, да выпей же чаю. Эй, жлоб! Где туз? Прячь юных съёмщиц в шкаф" />
 
         <ImageView
@@ -103,10 +126,30 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toStartOf="@+id/imageViewUserStatus"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/pencilmono_105944" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleViewUserPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewUserInfo" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:text="Информация о пользователе:"
+            android:textColor="@color/cardview_light_background"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewUserSurname" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

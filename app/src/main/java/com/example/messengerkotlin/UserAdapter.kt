@@ -1,5 +1,6 @@
 package com.example.messengerkotlin
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
 
 class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
+    private val TAG = "UserAdapter"
+
     var userList: List<User> = listOf()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
+
     private lateinit var onItemClickListenerInterface: OnItemClickListener
 
     fun onItemClickListener(onItemClickListener: OnItemClickListener) {
@@ -44,7 +49,7 @@ class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
         val user = userList.get(position)
         holder.textViewUserName.text = user.name
         holder.textViewUserSurname.text = user.surname
-        
+
         if (user.age == 0) {
             holder.textViewUserAge.visibility = TextView.INVISIBLE
         } else {
@@ -61,9 +66,20 @@ class UserAdapter : Adapter<UserAdapter.UserViewHolder>() {
             ContextCompat.getDrawable(holder.imageViewUserStatus.context, backgroundIntRes)
         holder.imageViewUserStatus.setImageDrawable(drawable)
 
-        drawable =
-            ContextCompat.getDrawable(holder.imageViewUserPhoto.context, R.drawable.colt_bg_logo)
-        holder.imageViewUserPhoto.setImageDrawable(drawable)
+
+        if (user.userMainPhoto.equals("")) {
+            drawable =
+                ContextCompat.getDrawable(
+                    holder.imageViewUserPhoto.context,
+                    R.drawable.colt_bg_logo
+                )
+            holder.imageViewUserPhoto.setImageDrawable(drawable)
+        } else {
+            Glide.with(holder.imageViewUserPhoto.context)
+                .load(user.userMainPhoto)
+                .into(holder.imageViewUserPhoto)
+        }
+
 
         holder.itemView.setOnClickListener({
             if (onItemClickListenerInterface != null) {

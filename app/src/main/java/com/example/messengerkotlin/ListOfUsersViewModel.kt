@@ -25,7 +25,8 @@ class ListOfUsersViewModel
     private val database = Firebase.database
     private val referenceUsers = database.getReference("Users")
     private val USER_CHILD_STATUS = "online"
-
+    private val USER_CHILD_PHOTO_URI = "userMainPhoto"
+    val userMainPhotoLD: MutableLiveData<String> = MutableLiveData()
 
     init {
         referenceUsers.addValueEventListener(object : ValueEventListener {
@@ -40,6 +41,8 @@ class ListOfUsersViewModel
                         Log.d(TAG, "onDataChange: user = $user")
                         Log.d(TAG, "onDataChange: user.id = $user.id")
                         if (user != null) {
+
+                            userMainPhotoLD.value = user.userMainPhoto
 
                             if (!currentUser.uid.equals(user.id)) {
                                 listOfUsersFromDb.add(user)

@@ -1,5 +1,6 @@
 package com.example.messengerkotlin
 
+import android.net.Uri
 import java.io.Serializable
 
 class User() : Serializable{
@@ -11,7 +12,7 @@ class User() : Serializable{
     var online: Boolean = false
     lateinit var email: String
     var userInfo = ""
-    var countUnreadMessages = 0
+    var userMainPhoto = ""
 
     constructor(
         id: String,

@@ -1,20 +1,28 @@
 package com.example.messengerkotlin
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.location.LocationRequest
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.firebase.database.FirebaseDatabase
 import kotlin.math.log
 
@@ -27,10 +35,6 @@ class ListOfUsersActivity : AppCompatActivity() {
     private lateinit var adapter: UserAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var currentUserId: String
-
-
-    private val database = FirebaseDatabase.getInstance()
-    private val reference = database.getReference("Messages")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,12 +67,23 @@ class ListOfUsersActivity : AppCompatActivity() {
         viewModel.userListLD.observe(this, {
             adapter.userList = it
         })
+//===============================================================================================
     }
 
     private fun setupOnClickListeners() {
         adapter.onItemClickListener({
             Log.d(TAG, "setupOnClickListeners: Online = ${it.online}")
-            val intent = UserInfoActivity().newIntent(this, currentUserId, it.id, it.name, it.surname, it.age.toString(), it.userInfo, it.online)
+            val intent = UserInfoActivity().newIntent(
+                this,
+                currentUserId,
+                it.id,
+                it.name,
+                it.surname,
+                it.age.toString(),
+                it.userInfo,
+                it.online,
+                it.userMainPhoto
+            )
             startActivity(intent)
         })
     }
@@ -108,6 +123,8 @@ class ListOfUsersActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        Log.d(TAG, "onResume: ")
         viewModel.setUserOnline(true)
+
     }
 }

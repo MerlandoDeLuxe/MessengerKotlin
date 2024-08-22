@@ -1,18 +1,22 @@
 package com.example.messengerkotlin
 
+import android.graphics.drawable.Drawable
+import android.media.Image
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.log
 
-class UserPhotoAdapter : RecyclerView.Adapter<UserPhotoAdapter.UserPhotoViewHolder>() {
+class UserPhotoAdapter(private val className: String) :
+    RecyclerView.Adapter<UserPhotoAdapter.UserPhotoViewHolder>() {
     private val TAG = "UserPhotoAdapter"
 
     var urlUserPhotoList: List<Uri> = mutableListOf()
@@ -21,14 +25,6 @@ class UserPhotoAdapter : RecyclerView.Adapter<UserPhotoAdapter.UserPhotoViewHold
             notifyDataSetChanged()
         }
 
-//    var userPhotoTempList: MutableList<Uri> = mutableListOf()
-//        set(value) {
-//            for ((key, value) in urlUserPhotoList) {
-//                userPhotoTempList.add(value)
-//            }
-//            field = userPhotoTempList
-//            Log.d(TAG, "userPhotoTempList = $userPhotoTempList")
-//        }
 
     private lateinit var onPhotoClickListenerInterface: OnPhotoClickListener
 
@@ -51,8 +47,7 @@ class UserPhotoAdapter : RecyclerView.Adapter<UserPhotoAdapter.UserPhotoViewHold
     class UserPhotoViewHolder(itemView: View) : ViewHolder(itemView) {
         val imageViewFromStorage = itemView.findViewById<ImageView>(R.id.imageViewFromStorage)
         val imageViewDeletePhoto = itemView.findViewById<ImageView>(R.id.imageViewDeletePhoto)
-        val imageViewMakePhotoMain = itemView.findViewById<ImageView>(R.id.imageViewMakePhotoMain)
-
+        var imageViewMakePhotoMain = itemView.findViewById<ImageView>(R.id.imageViewMakePhotoMain)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserPhotoViewHolder {
@@ -64,11 +59,20 @@ class UserPhotoAdapter : RecyclerView.Adapter<UserPhotoAdapter.UserPhotoViewHold
     override fun onBindViewHolder(holder: UserPhotoViewHolder, position: Int) {
 
         //var photoUrl = urlUserPhotoList.get(position)
+        Log.d(TAG, "onBindViewHolder: classname = $className")
+        if (className.equals("UserInfoActivity")) {
+            holder.imageViewDeletePhoto.visibility = ImageView.INVISIBLE
+            holder.imageViewMakePhotoMain.visibility = ImageView.INVISIBLE
+        } else {
+            holder.imageViewDeletePhoto.visibility = ImageView.VISIBLE
+            holder.imageViewMakePhotoMain.visibility = ImageView.VISIBLE
+        }
 
-            Glide.with(holder.itemView.context)
-                .load(urlUserPhotoList.get(position))
-                .into(holder.imageViewFromStorage)
-            Log.d(TAG, "onBindViewHolder: photoUrl = $urlUserPhotoList.get(position)")
+        Glide.with(holder.itemView.context)
+            .load(urlUserPhotoList.get(position))
+            .into(holder.imageViewFromStorage)
+
+        Log.d(TAG, "onBindViewHolder: photoUrl = $urlUserPhotoList.get(position)")
 
 
         holder.imageViewDeletePhoto.setOnClickListener {
@@ -78,7 +82,7 @@ class UserPhotoAdapter : RecyclerView.Adapter<UserPhotoAdapter.UserPhotoViewHold
         }
         holder.imageViewMakePhotoMain.setOnClickListener {
             if (onMakePhotoMainListenerInterface != null) {
-                onMakePhotoMainListenerInterface.onMakePhotoMain(position)
+                onMakePhotoMainListenerInterface.onMakePhotoMain(urlUserPhotoList.get(position))
             }
         }
     }
@@ -92,7 +96,7 @@ class UserPhotoAdapter : RecyclerView.Adapter<UserPhotoAdapter.UserPhotoViewHold
     }
 
     fun interface OnMakePhotoMainListener {
-        fun onMakePhotoMain(position: Int)
+        fun onMakePhotoMain(uri: Uri)
     }
 
     override fun getItemCount(): Int {

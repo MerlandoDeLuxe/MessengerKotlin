@@ -8,19 +8,53 @@
     android:background="@color/background"
     tools:context=".ChatActivity">
 
-    <TextView
-        android:id="@+id/textViewTitle"
+    <ImageView
+        android:id="@+id/imageViewTitleHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/design_default_color_secondary"
-        android:padding="16dp"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:layout_height="55dp"
+        android:background="#800F5E93"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+
+        android:textAlignment="textStart"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/imageViewUserPhotoIcon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="John Smith" />
+
+    <TextView
+        android:id="@+id/textViewTyping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/recycleViewMessages"
+        app:layout_constraintStart_toEndOf="@+id/imageViewUserPhotoIcon"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+        tools:text="печатает..." />
+
+    <com.github.siyamed.shapeimageview.CircularImageView
+        android:id="@+id/imageViewUserPhotoIcon"
+        android:layout_width="46dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/colt_logo"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewTitleHeader"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageViewTitleHeader"
+        app:siBorderColor="#0F5E93"
+        app:siBorderWidth="4dp" />
 
     <ImageView
         android:id="@+id/imageViewUserStatus"
@@ -29,9 +63,9 @@
         android:layout_margin="16dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="52dp"
-        app:layout_constraintBottom_toBottomOf="@+id/textViewTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewTitleHeader"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textViewTitle"
+        app:layout_constraintTop_toTopOf="@+id/imageViewTitleHeader"
         tools:background="@drawable/circle_green_online" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -41,7 +75,7 @@
         app:layout_constraintBottom_toTopOf="@id/editTextMessage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitle"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewTitleHeader"
         tools:listitem="@layout/my_message_item_template" />
 
     <EditText
@@ -72,5 +106,7 @@
         app:layout_constraintTop_toBottomOf="@+id/recycleViewMessages"
         app:srcCompat="@android:drawable/ic_menu_send"
         app:tint="#146D63" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,17 +6,44 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyProfileActivity"
     android:background="@color/background"
+    tools:context=".MyProfileActivity"
     tools:layout_editor_absoluteX="-1dp"
     tools:layout_editor_absoluteY="52dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         tools:layout_editor_absoluteX="-1dp"
         tools:layout_editor_absoluteY="52dp">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/constraintLayout"
+            app:layout_constraintEnd_toEndOf="@id/constraintLayout"
+            app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
+            app:layout_constraintStart_toStartOf="@id/constraintLayout"
+            android:visibility="invisible"/>
+
+        <com.github.siyamed.shapeimageview.mask.PorterShapeImageView
+            android:id="@+id/imageViewUserPhoto"
+            android:layout_width="148dp"
+            android:layout_height="222dp"
+            android:layout_margin="8dp"
+            android:layout_marginTop="3dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/user_photo"
+            android:maxHeight="400dp"
+            app:layout_constraintBottom_toTopOf="@+id/divider3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider1"
+            app:siShape="@drawable/shape_rounded_rectangle_user_photo_template"
+            app:siSquare="true"
+            app:srcCompat="@drawable/colt_bg_logo" />
+
 
         <ImageView
             android:id="@+id/imageViewChangeUserPhoto"
@@ -45,7 +72,7 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="6dp"
@@ -56,7 +83,7 @@
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="wrap_content"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:padding="6dp"
@@ -78,7 +105,7 @@
 
         <EditText
             android:id="@+id/editTextYourName"
-            android:layout_width="0dp"
+            android:layout_width="180dp"
             android:layout_height="35dp"
             android:layout_margin="8dp"
             android:autofillHints="@string/name"
@@ -89,13 +116,12 @@
             android:maxLength="15"
             android:padding="6dp"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         <EditText
             android:id="@+id/editTextYourSurname"
-            android:layout_width="0dp"
+            android:layout_width="180dp"
             android:layout_height="35dp"
             android:layout_margin="8dp"
             android:autofillHints="@string/name"
@@ -106,13 +132,12 @@
             android:maxLength="15"
             android:padding="6dp"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
         <EditText
             android:id="@+id/editTextYourAge"
-            android:layout_width="wrap_content"
+            android:layout_width="180dp"
             android:layout_height="35dp"
             android:layout_margin="8dp"
             android:autofillHints="age"
@@ -130,7 +155,7 @@
         <EditText
             android:id="@+id/editTextYourInfo"
             android:layout_width="0dp"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_marginTop="8dp"
             android:autofillHints="info about yourself"
@@ -139,7 +164,7 @@
             android:hint="@string/text_about_yourself"
             android:inputType="text|textCapSentences|textMultiLine"
             android:maxLength="250"
-            android:padding="6dp"
+            android:padding="12dp"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.533"
@@ -159,11 +184,11 @@
 
         <View
             android:id="@+id/divider2"
-            android:layout_width="395dp"
+            android:layout_width="180dp"
             android:layout_height="0.5dp"
             android:layout_margin="8dp"
             android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewUserPhoto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextYourName" />
 
@@ -181,11 +206,12 @@
 
         <View
             android:id="@+id/divider4"
-            android:layout_width="395dp"
+            android:layout_width="180dp"
             android:layout_height="0.5dp"
             android:layout_margin="8dp"
             android:background="?android:attr/listDivider"
             android:padding="6dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewUserPhoto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextYourSurname" />
 
@@ -213,15 +239,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_manage" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/imageViewFromCropImage"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/editTextYourInfo"-->
-<!--            tools:srcCompat="@tools:sample/avatars" />-->
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleViewUserPhoto"
             android:layout_width="match_parent"
@@ -231,6 +248,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextYourInfo"
             tools:listitem="@layout/user_photo_template" />
+
+        <ImageView
+            android:id="@+id/imageViewShowPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycleViewUserPhoto"
+            tools:srcCompat="@tools:sample/avatars" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

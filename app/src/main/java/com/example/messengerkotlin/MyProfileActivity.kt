@@ -2,6 +2,9 @@ package com.example.messengerkotlin
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
@@ -9,13 +12,23 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.theartofdev.edmodo.cropper.CropImage
+import java.util.concurrent.ThreadLocalRandom
+
 
 class MyProfileActivity : AppCompatActivity() {
     private val TAG = "MyProfileActivity"
@@ -33,6 +46,9 @@ class MyProfileActivity : AppCompatActivity() {
     private lateinit var buttonSaveAndBack: ImageView
     private lateinit var imageViewSetChanges: ImageView
     private lateinit var imageViewChangeUserPhoto: ImageView
+    private lateinit var imageViewShowPhoto: ImageView
+    private lateinit var imageViewUserPhoto: ImageView
+    private lateinit var progressBar: ProgressBar
 
     private lateinit var viewModel: MyProfileViewModel
     private lateinit var adapter: UserPhotoAdapter
@@ -41,10 +57,57 @@ class MyProfileActivity : AppCompatActivity() {
     private lateinit var currentUserId: String
     private lateinit var otherUserId: String
 
-    //    private lateinit var cropImageView: CropImageView
-    lateinit var uri: Uri
+    private val SELECT_PICTURE = 200
+    private lateinit var selectedImageBitmap: Bitmap
 
-    private lateinit var imageViewFromCropImage: ImageView
+    private val GalleryPick = 1
+    private val CAMERA_REQUEST = 100
+    private val STORAGE_REQUEST = 200
+    private val IMAGEPICK_GALLERY_REQUEST = 300
+    private val IMAGE_PICKCAMERA_REQUEST = 400
+    private lateinit var cameraPermission: Array<String>
+    private lateinit var storagePermission: Array<String>
+    private lateinit var imageUri: Uri
+
+    private lateinit var preferences: SharedPreferences
+    private lateinit var myEdit: SharedPreferences.Editor
+    private lateinit var user_photo_Uri: String
+
+//    //Для запуска новой активити чтобы выбрать фотку с устройства
+//    val launchSomeActivity = registerForActivityResult(
+//        ActivityResultContracts
+//            .StartActivityForResult()
+//    ) {
+//        if (it.resultCode == Activity.RESULT_OK) {
+//            val intentData = it.data
+//            if (intentData != null && intentData.data != null) {
+//                val selectedImageUri = intentData.data
+//
+//                try {
+//                    selectedImageBitmap = MediaStore.Images.Media.getBitmap(
+//                        this.contentResolver,
+//                        selectedImageUri
+//                    )
+//                } catch (e: IOException) {
+//                    Log.d(TAG, "onCreate: Ошибка: ${e.message}")
+//                }
+//                imageViewShowPhoto.setImageBitmap(selectedImageBitmap)
+//            }
+//        }
+//    }
+
+    private val cropActivityResultContract = object : ActivityResultContract<Any?, Uri?>() {
+        override fun createIntent(context: Context, input: Any?): Intent {
+            return CropImage.activity()
+                .setAspectRatio(9, 16)
+                .getIntent(this@MyProfileActivity)
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return CropImage.getActivityResult(intent)?.uri
+        }
+    }
+    private lateinit var cropActivityResultLauncher: ActivityResultLauncher<Any?>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,10 +126,73 @@ class MyProfileActivity : AppCompatActivity() {
         editTextYourSurname.setText(intent.getStringExtra(EXTRA_SURNAME))
         editTextYourAge.setText(intent.getStringExtra(EXTRA_AGE))
         editTextYourInfo.setText(intent.getStringExtra(EXTRA_USER_INFO))
+
+        preferences = applicationContext.getSharedPreferences("user_photo", Context.MODE_PRIVATE)
+        user_photo_Uri = preferences.getString("user_photo", "").toString()
+        Log.d(TAG, "onCreate: user_photo_Uri = $user_photo_Uri")
+        if (!hasRequiredPermissions()) {
+            ActivityCompat.requestPermissions(
+                this, CAMERAX_PERMISSIONS, 0
+            )
+        }
+        //Камеру нужно доделать отсюда: https://www.youtube.com/watch?v=12_iKwGIP64
+        //после изучения Compose
+//        setContent {
+//            android.graphics.Camera()
+//        }
+
         observeViewModel()
         setupOnClickListeners()
 
+        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
+
+            it?.let { uri ->
+//                imageViewShowPhoto.setImageURI(uri)
+
+                viewModel.addNewUserPhoto(uri)
+            }
+        }
     }
+
+//    fun imageChooser() {
+//        val intent = Intent()
+//        intent.setType("image/*")
+//        intent.setAction(Intent.ACTION_GET_CONTENT)
+////        startActivityForResult(Intent.createChooser(intent, "Выберите каритнку"), SELECT_PICTURE)
+//        launchSomeActivity.launch(intent)
+//    }
+
+
+//    //    Deprecated метод для вызова активити с галереей
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == SELECT_PICTURE) {
+//                val selectedImageUri = data?.data
+//                if (null != selectedImageUri) {
+//                    imageViewShowPhoto.setImageURI(selectedImageUri)
+//                }
+//            }
+//        }
+//    }
+
+//    fun showImageDialog() {
+//        val options: Array<String> = arrayOf("Camera", "Gallery")
+//        val builder = AlertDialog.Builder(this)
+//        builder.setTitle("Откуда выбрать картинку: ")
+//        builder.setItems(options, DialogInterface.OnClickListener { dialog, which ->
+//            if (which ==0){
+//                Toast.makeText(this, "нет прав", Toast.LENGTH_SHORT).show()
+//            }
+//        })
+//        builder.create().show()
+//    }
+
+
+//    fun pickFromGallery(){
+//        CropImage.activity().start
+//    }
 
     fun observeViewModel() {
         viewModel.checkAdminUser()
@@ -77,16 +203,66 @@ class MyProfileActivity : AppCompatActivity() {
                 imageViewSetChanges.visibility = ImageView.INVISIBLE
             }
         }
-
-        viewModel.userPhotoLD.observe(this) {
-                //Здесь отправляем в адаптер только адреса для отображения. Имя файлов для этого не требуется
-                val tempListOfPhotoUri: MutableList<Uri> = mutableListOf()
-                for ((key, value) in it) {
-                    tempListOfPhotoUri.add(value)
-                }
+//==================================================================================================
+        viewModel.collectionUserPhotoLD.observe(this) {
+            //Здесь отправляем в адаптер только адреса для отображения. Имя файлов для этого не требуется
+            val tempListOfPhotoUri: MutableList<Uri> = mutableListOf()
+            for ((key, value) in it) {
+                tempListOfPhotoUri.add(value)
+            }
             Log.d(TAG, "observeViewModel: вызов адаптера")
-                adapter.urlUserPhotoList = tempListOfPhotoUri
+            adapter.urlUserPhotoList = tempListOfPhotoUri
         }
+//==================================================================================================
+//        val drawableUnselectedUserPhotoRes = R.drawable.black_heart_unselected_user_photo
+//        val drawableSelectedUserPhotoRes = R.drawable.black_heart_selected_user_photo
+//        val unselectedUserPhoto =
+//            ContextCompat.getDrawable(this, drawableUnselectedUserPhotoRes)
+//        val selectedUserPhoto =
+//            ContextCompat.getDrawable(this, drawableSelectedUserPhotoRes)
+        //Если при запуске профайла обнаружено, что фото нет
+        if (user_photo_Uri.equals("")) {
+            Glide.with(this)
+                .load(R.drawable.colt_bg_logo)
+                .into(imageViewUserPhoto)
+        } else {
+            Glide.with(this)
+                .load(user_photo_Uri)
+                .into(imageViewUserPhoto)
+        }
+
+        Log.d(TAG, "observeViewModel: user_photo_Uri = $user_photo_Uri")
+
+        viewModel.collectionUserMainPhotoLD.observe(this) {
+            Log.d(TAG, "observeViewModel: it = $it")
+            if (it.isEmpty()) {
+                user_photo_Uri = ""
+                Glide.with(this)
+                    .load(R.drawable.colt_bg_logo)
+                    .into(imageViewUserPhoto)
+                myEdit = preferences.edit()
+                myEdit.putString("user_photo", user_photo_Uri).commit()
+            } else {
+                for ((key, value) in it) {
+                    user_photo_Uri = value.toString()
+                    Glide.with(this)
+                        .load(user_photo_Uri)
+                        .into(imageViewUserPhoto)
+                    myEdit = preferences.edit()
+                    myEdit.putString("user_photo", user_photo_Uri).commit()
+                }
+            }
+
+        }
+
+        viewModel.isPhotosStillLoading.observe(this, {
+            if (it){
+                progressBar.visibility = ProgressBar.VISIBLE
+            }
+            else{
+                progressBar.visibility = ProgressBar.INVISIBLE
+            }
+        })
     }
 
     fun setupOnClickListeners() {
@@ -101,14 +277,21 @@ class MyProfileActivity : AppCompatActivity() {
 
         //==============================================================================
         imageViewChangeUserPhoto.setOnClickListener({
+//            imageChooser()
+//            showImageDialog()
 
+            cropActivityResultLauncher.launch(null)
         })
 
         adapter.onDeletePhotoClickListener {
-            viewModel.checkSelectedUserPhotoForDelete(it)
+            viewModel.deleteSelectedPhoto(it)
             Log.d(TAG, "setupOnClickListeners: $it")
         }
 
+        adapter.onMakePhotoClickListener({
+            viewModel.setUserMainPhoto(it)
+        })
+        
     }
 
     fun saveUserData() {
@@ -153,33 +336,18 @@ class MyProfileActivity : AppCompatActivity() {
         buttonSaveAndBack = findViewById(R.id.buttonSaveAndBack)
         imageViewSetChanges = findViewById(R.id.imageViewSetChanges)
         imageViewChangeUserPhoto = findViewById(R.id.imageViewChangeUserPhoto)
+        imageViewShowPhoto = findViewById(R.id.imageViewShowPhoto)
+        imageViewUserPhoto = findViewById(R.id.imageViewUserPhoto)
+        progressBar = findViewById(R.id.progressBar)
 
-
+        adapter = UserPhotoAdapter(localClassName)
         recycleViewUserPhoto = findViewById(R.id.recycleViewUserPhoto)
-        adapter = UserPhotoAdapter()
         recycleViewUserPhoto.adapter = adapter
-        recycleViewUserPhoto.layoutManager = GridLayoutManager(this, 1)
-//        imageViewFromCropImage = findViewById(R.id.imageViewFromCropImage)
-//        cropImageView = findViewById(com.canhub.cropper.R.id.cropImageView)
+        recycleViewUserPhoto.layoutManager = GridLayoutManager(this, 2)
 
-
-//
         viewModel = ViewModelProvider(this).get(MyProfileViewModel::class.java)
-//
-//        cropActivityResultLauncher = registerForActivityResult(cropActivityResultContract) {
-//            it?.let { uri ->
-//               // imageViewFromCropImage.setImageURI(uri)
-//                viewModel.changeUserPhoto(uri)
-//            }
-//        }
-//
-//        uri = Uri.parse("https://firebasestorage.googleapis.com/v0/b/messengerkotlin-f6258.appspot.com/o/UserPhotoGallery%2F6v9ugEJ03iP0fkMxXkgmoBqSzzG3%2FOpenPhotos%2F5035634689829044033?alt=media&token=b704c40e-812b-45ae-8d4c-5ada2d69345a")
-//        val draweeView = findViewById<SimpleDraweeView>(R.id.my_image_view) as SimpleDraweeView
-//        draweeView.setImageURI(uri)
-//
-//
-//        cropImageView.setImageUriAsync(uri)
-//        cropImageView.setImageUriAsync(uri)
+
+
     }
 
     override fun onPause() {
@@ -197,5 +365,21 @@ class MyProfileActivity : AppCompatActivity() {
         super.onDestroy()
         saveUserData()
         Log.d(TAG, "onDestroy: ")
+    }
+
+    private fun hasRequiredPermissions(): Boolean {
+        return CAMERAX_PERMISSIONS.all {
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                it
+            ) == PackageManager.PERMISSION_GRANTED
+        }
+    }
+
+    companion object {
+        private val CAMERAX_PERMISSIONS = arrayOf(
+            android.Manifest.permission.CAMERA,
+            android.Manifest.permission.RECORD_AUDIO,
+        )
     }
 }

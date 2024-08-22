@@ -33,4 +33,5 @@
     <string name="about_you">О себе</string>
     <string name="text_about_yourself">Вы можете добавить несколько строк о себе</string>
     <string name="back_to_userinfo">Вернуться к информации о пользователе</string>
+    <string name="typing">печатает...</string>
 </resources>
